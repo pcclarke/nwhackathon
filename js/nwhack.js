@@ -49,6 +49,8 @@ d3.queue()
             d3.select("#height").text(d["Bowl Height"]);
             d3.select("#objid").text(d.OBJECTID);
 
+            d3.select("#infoImg").attr("src", "img/" + d.OBJECTID + ".jpg");
+
             d3.select("#infoBox").classed("hidden", false);
         };
 
