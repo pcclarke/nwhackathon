@@ -5,7 +5,8 @@
 
 h1 {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    margin: 25px auto;
+    margin: 25px 0px;
+    text-align: center;
 }
 
 #map {
@@ -33,6 +34,8 @@ h1 {
 #infoBox {
     background: #fff;
     border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: 3px 3px 5px 6px #ccc;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 15px auto;
     padding: 10px;
@@ -56,5 +59,6 @@ h1 {
 }
 
 #infoImg {
-    width: 280px;
+    margin-top: 10px;
+    width: 100%;
 }
