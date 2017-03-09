@@ -1,31 +1,19 @@
-* {
-    margin: 0;
-    padding: 0;
+body {
+  margin: 0;
 }
 
-#container {
-    
+path {
+  fill: none;
+  stroke: #000;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
-h1 {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    margin: 25px 0px;
-    text-align: center;
-}
+.major_road { stroke: #776; }
+.minor_road { stroke: #ccb; }
+.highway { stroke: #f39; stroke-width: 1.5px; }
+.rail { stroke: #7de; }
 
-#map {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.city {
-    fill: #fff;
- 	stroke: #bbb;
-}
-
-.ndub {
-    fill: #eee;
- 	stroke: #bbb;
-}
 
 .fountain {
     cursor: pointer;
@@ -64,10 +52,5 @@ h1 {
 
 #infoImg {
     margin-top: 10px;
-    width: 100%;
-}
-
-.dtMap {
-    margin: 50px auto;
     width: 100%;
 }
