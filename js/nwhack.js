@@ -7,7 +7,8 @@ bounds = L.latLngBounds(corner1, corner2);
 
 var map = L.map('map', {
     renderer: L.svg(),
-    maxBounds: bounds
+    maxBounds: bounds,
+    minZoom: 14
   })
   .setView([49.205718, -122.910956], 13);
 
@@ -80,7 +81,6 @@ d3.csv("data/fountains.csv", function(error, fountains) {
         .enter()
         .append("circle")
         .attr("class", "fountain")
-        .attr("r", 3)
         .style("fill", function(d) {
             return z(d.Type);
         })
@@ -97,6 +97,24 @@ d3.csv("data/fountains.csv", function(error, fountains) {
         return "translate(" + 
           map.latLngToLayerPoint(d.LatLng).x + ","+ 
           map.latLngToLayerPoint(d.LatLng).y + ")";
+      })
+      .attr("r", function(d) {
+        switch (map.getZoom()) {
+          case 15: 
+            return 4;
+            break;
+          case 16: 
+            return 5;
+            break;
+          case 17: 
+            return 8;
+            break;
+          case 18: 
+            return 12;
+            break;
+          default:
+            return 3;
+        }
       });
     }
 });
