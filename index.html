@@ -3,9 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="css/nwhack.css">
+         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+   integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+   crossorigin=""/>
+         <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+   integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+   crossorigin=""></script>
     </head>
 
     <body>
+        <div id="map" style="width: 100%; height: 800px"></div>
+
         <div id="infoBox" class="hidden">
             <p class="infoTitle"><span id="area"></span> <span id="type"></span> Fountain</p>
             <p class="info">Neighbourhood: <span class="infoData"><span id="neighbourhood"></span></span></p>
@@ -15,7 +23,7 @@
             <p class="info">Object ID: <span class="infoData"><span id="objid"></span></span></p>
             <img id="infoImg" />
         </div>
-
+        
         <!--<div id="container">
             <h1>Drinking Fountains in New Westminster</h1>
             <div id="map"></div>

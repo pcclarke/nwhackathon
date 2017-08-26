@@ -1,76 +1,30 @@
-var width = Math.max(960, window.innerWidth),
-    height = Math.max(500, window.innerHeight);
-
-var tiler = d3.tile()
-    .size([width, height]);
-
-var projection = d3.geoMercator()
-    .center([-122.910956, 49.205718])
-    .scale((1 << 22) / 2 / Math.PI)
-    .translate([width / 2, height / 2]);
-
-var path = d3.geoPath()
-    .projection(projection);
-
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .classed("fountainMap", "true");
-
 var z = d3.scaleOrdinal()
     .range(["#590CE8", "#C500DB", "#E80C35", "#AAAAAA", "#a05d56", "#d0743c", "#ff8c00"]);
 
-svg.selectAll("g")
-    .data(tiler
-      .scale(projection.scale() * 2 * Math.PI)
-      .translate(projection([0, 0])))
-  .enter().append("g")
-    .each(function(d) {
-      var g = d3.select(this);
+var map = L.map('map', {
+    renderer: L.svg()
+  })
+  .setView([49.205718, -122.910956], 13);
+var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+L.tileLayer(
+  'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
+  {
+    attribution: '&copy; ' + mapLink + ' Contributors',
+    maxZoom: 18,
+  }
+).addTo(map);
+        
+/* Initialize the SVG layer */
+//map._initPathRoot();
 
-      d3.json("https://tile.mapzen.com/mapzen/vector/v1/water/" + d[2] + "/" + d[0] + "/" + d[1] + ".json?api_key=mapzen-8obQaFK", function(error, json) {
-        if (error) throw error;
+var svgLayer = L.svg();
+svgLayer.addTo(map);
 
-        //console.log(Object.keys(json));
-
-        //Object.keys(json).forEach(function(key) {
-          g.selectAll("path")
-            .data(json.features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
-          .enter().append("path")
-            .attr("class", function(d) { return d.properties.kind; })
-            .attr("d", path);
-        //});
-      });
-      d3.json("https://tile.mapzen.com/mapzen/vector/v1/landuse/" + d[2] + "/" + d[0] + "/" + d[1] + ".json?api_key=mapzen-8obQaFK", function(error, json) {
-        if (error) throw error;
-
-        //console.log(Object.keys(json));
-
-        //Object.keys(json).forEach(function(key) {
-          g.selectAll("path")
-            .data(json.features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
-          .enter().append("path")
-            .attr("class", function(d) { return d.properties.kind; })
-            .attr("d", path);
-        //});
-      });
-      d3.json("https://tile.mapzen.com/mapzen/vector/v1/roads/" + d[2] + "/" + d[0] + "/" + d[1] + ".json?api_key=mapzen-8obQaFK", function(error, json) {
-        if (error) throw error;
-
-        //console.log(Object.keys(json));
-
-        //Object.keys(json).forEach(function(key) {
-          g.selectAll("path")
-            .data(json.features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
-          .enter().append("path")
-            .attr("class", function(d) { return d.properties.kind; })
-            .attr("d", path);
-        //});
-      });
-    });
+var svg = d3.select("#map").select("svg");
+var g = d3.select("#map").select("svg").select('g');
+g.attr("class", "leaflet-zoom-hide");
 
 var viewMapInfo = function(d) {
-
     d3.select("#infoBox")
         .style("left", function(temp) {
             var shift = (d3.event.pageX + 5) + "px";
@@ -113,17 +67,15 @@ var viewMapInfo = function(d) {
 d3.csv("data/fountains.csv", function(error, fountains) {
     if (error) throw error;
 
-    var fountainCircles = svg.selectAll(".fountain")
+    fountains.forEach(function(d) {
+      d.LatLng = new L.LatLng(d.Y, d.X);
+    });
+
+    var fountainCircles = g.selectAll(".fountain")
         .data(fountains)
         .enter()
         .append("circle")
         .attr("class", "fountain")
-        .attr("cx", function(d) {
-            return projection([d.X, d.Y])[0];
-        })
-        .attr("cy", function(d) {
-            return projection([d.X, d.Y])[1];
-        })
         .attr("r", 3)
         .style("fill", function(d) {
             return z(d.Type);
@@ -133,7 +85,155 @@ d3.csv("data/fountains.csv", function(error, fountains) {
             d3.select("#infoBox").classed("hidden", true);
         });
 
+    map.on("viewreset", update);
+    update();
+
+    function update() {
+      fountainCircles.attr("transform", function(d) { 
+        return "translate(" + 
+          map.latLngToLayerPoint(d.LatLng).x + ","+ 
+          map.latLngToLayerPoint(d.LatLng).y + ")";
+      });
+    }
 });
+
+
+// var width = Math.max(960, window.innerWidth),
+//     height = Math.max(500, window.innerHeight);
+
+// var tiler = d3.tile()
+//     .size([width, height]);
+
+// var projection = d3.geoMercator()
+//     .center([-122.910956, 49.205718])
+//     .scale((1 << 22) / 2 / Math.PI)
+//     .translate([width / 2, height / 2]);
+
+// var path = d3.geoPath()
+//     .projection(projection);
+
+// var svg = d3.select("body").append("svg")
+//     .attr("width", width)
+//     .attr("height", height)
+//     .classed("fountainMap", "true");
+
+// var z = d3.scaleOrdinal()
+//     .range(["#590CE8", "#C500DB", "#E80C35", "#AAAAAA", "#a05d56", "#d0743c", "#ff8c00"]);
+
+// svg.selectAll("g")
+//     .data(tiler
+//       .scale(projection.scale() * 2 * Math.PI)
+//       .translate(projection([0, 0])))
+//   .enter().append("g")
+//     .each(function(d) {
+//       var g = d3.select(this);
+
+//       d3.json("https://tile.mapzen.com/mapzen/vector/v1/water/" + d[2] + "/" + d[0] + "/" + d[1] + ".json?api_key=mapzen-8obQaFK", function(error, json) {
+//         if (error) throw error;
+
+//         //console.log(Object.keys(json));
+
+//         //Object.keys(json).forEach(function(key) {
+//           g.selectAll("path")
+//             .data(json.features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
+//           .enter().append("path")
+//             .attr("class", function(d) { return d.properties.kind; })
+//             .attr("d", path);
+//         //});
+//       });
+//       d3.json("https://tile.mapzen.com/mapzen/vector/v1/landuse/" + d[2] + "/" + d[0] + "/" + d[1] + ".json?api_key=mapzen-8obQaFK", function(error, json) {
+//         if (error) throw error;
+
+//         //console.log(Object.keys(json));
+
+//         //Object.keys(json).forEach(function(key) {
+//           g.selectAll("path")
+//             .data(json.features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
+//           .enter().append("path")
+//             .attr("class", function(d) { return d.properties.kind; })
+//             .attr("d", path);
+//         //});
+//       });
+//       d3.json("https://tile.mapzen.com/mapzen/vector/v1/roads/" + d[2] + "/" + d[0] + "/" + d[1] + ".json?api_key=mapzen-8obQaFK", function(error, json) {
+//         if (error) throw error;
+
+//         //console.log(Object.keys(json));
+
+//         //Object.keys(json).forEach(function(key) {
+//           g.selectAll("path")
+//             .data(json.features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
+//           .enter().append("path")
+//             .attr("class", function(d) { return d.properties.kind; })
+//             .attr("d", path);
+//         //});
+//       });
+//     });
+
+// var viewMapInfo = function(d) {
+
+//     d3.select("#infoBox")
+//         .style("left", function(temp) {
+//             var shift = (d3.event.pageX + 5) + "px";
+//             if (d3.event.pageX > 500) {
+//                 shift = (d3.event.pageX - 330) + "px";
+//             }
+//             return shift;
+//         })
+//         .style("top", function(temp) {
+//             var shift = (d3.event.pageY - 12) + "px";
+//             if (d.Y < 49.20752788) {
+//                 shift = (d3.event.pageY - 420) + "px";
+//             }
+//             return shift;
+//         });
+
+//     d3.select("#area").text(d.Area);
+//     d3.select("#type").text(d.Type);
+//     d3.select("#neighbourhood").text(d.Neighbourhood);
+//     d3.select("#colour").text(d["Colour/Material"]);
+//     if (d.Style === "-") {
+//         d3.select("#styleLine").classed("hidden", true);
+//     } else {
+//         d3.select("#style").text(d.Style);
+//         d3.select("#styleLine").classed("hidden", false);
+//     }
+//     if (d["Bowl Height"] === "-") {
+//         d3.select("#bowlLine").classed("hidden", true);
+//     } else {
+//         d3.select("#height").text(d["Bowl Height"]);
+//         d3.select("#bowlLine").classed("hidden", false);
+//     }
+//     d3.select("#objid").text(d.OBJECTID);
+
+//     d3.select("#infoImg").attr("src", "img/" + d.OBJECTID + ".jpg");
+
+//     d3.select("#infoBox").classed("hidden", false);
+// };
+
+// d3.csv("data/fountains.csv", function(error, fountains) {
+//     if (error) throw error;
+
+//     var fountainCircles = svg.selectAll(".fountain")
+//         .data(fountains)
+//         .enter()
+//         .append("circle")
+//         .attr("class", "fountain")
+//         .attr("cx", function(d) {
+//             return projection([d.X, d.Y])[0];
+//         })
+//         .attr("cy", function(d) {
+//             return projection([d.X, d.Y])[1];
+//         })
+//         .attr("r", 3)
+//         .style("fill", function(d) {
+//             return z(d.Type);
+//         })
+//         .on("mouseover", viewMapInfo)
+//         .on("mouseout", function(d) {
+//             d3.select("#infoBox").classed("hidden", true);
+//         });
+
+// });
 
 
 
