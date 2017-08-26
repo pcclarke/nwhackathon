@@ -26,14 +26,17 @@ svg.selectAll("g")
   .enter().append("g")
     .each(function(d) {
       var g = d3.select(this);
-      d3.json("https://vector.mapzen.com/osm/roads/" + d[2] + "/" + d[0] + "/" + d[1] + ".json?api_key=vector-tiles-LM25tq4", function(error, json) {
+      
+      d3.json("https://tile.mapzen.com/mapzen/vector/v1/all/" + d[2] + "/" + d[0] + "/" + d[1] + ".json?api_key=mapzen-8obQaFK", function(error, json) {
         if (error) throw error;
 
-        g.selectAll("path")
-          .data(json.features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
-        .enter().append("path")
-          .attr("class", function(d) { return d.properties.kind; })
-          .attr("d", path);
+        Object.keys(json).forEach(function(key) {
+          g.selectAll("path")
+            .data(json[key].features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
+          .enter().append("path")
+            .attr("class", function(d) { return d.properties.kind; })
+            .attr("d", path);
+        });
       });
     });
 
