@@ -2,6 +2,10 @@ body {
   margin: 0;
 }
 
+svg {
+  pointer-events: all;
+}
+
 .fountain {
     cursor: pointer;
 }
@@ -20,6 +24,7 @@ body {
     padding: 10px;
     position: absolute;
     width: 300px;
+    z-index: 1000;
 }
 
 #infoBox .infoTitle {

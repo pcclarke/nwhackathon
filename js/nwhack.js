@@ -1,11 +1,18 @@
 var z = d3.scaleOrdinal()
     .range(["#590CE8", "#C500DB", "#E80C35", "#AAAAAA", "#a05d56", "#d0743c", "#ff8c00"]);
 
+var corner1 = L.latLng(49.254074, -123.003616),
+  corner2 = L.latLng(49.162721, -122.857018),
+bounds = L.latLngBounds(corner1, corner2);
+
 var map = L.map('map', {
-    renderer: L.svg()
+    renderer: L.svg(),
+    maxBounds: bounds
   })
   .setView([49.205718, -122.910956], 13);
+
 var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+
 L.tileLayer(
   'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
   {
@@ -15,7 +22,6 @@ L.tileLayer(
 ).addTo(map);
         
 /* Initialize the SVG layer */
-//map._initPathRoot();
 
 var svgLayer = L.svg();
 svgLayer.addTo(map);
@@ -85,7 +91,7 @@ d3.csv("data/fountains.csv", function(error, fountains) {
             d3.select("#infoBox").classed("hidden", true);
         });
 
-    map.on("viewreset", update);
+    map.on("zoomend", update);
     update();
 
     function update() {
