@@ -2,19 +2,6 @@ body {
   margin: 0;
 }
 
-path {
-  fill: none;
-  stroke: #000;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-.major_road { stroke: #776; }
-.minor_road { stroke: #ccb; }
-.highway { stroke: #f39; stroke-width: 1.5px; }
-.rail { stroke: #7de; }
-
-
 .fountain {
     cursor: pointer;
 }
@@ -54,3 +41,25 @@ path {
     margin-top: 10px;
     width: 100%;
 }
+
+
+.fountainMap path {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.fountainMap .water-layer, .fountainMap .river, .fountainMap .stream, .fountainMap .canal { fill: none; stroke: #9DD9D2; stroke-width: 1.5px; }
+.fountainMap .water, .fountainMap .ocean { fill: #9DD9D2; }
+.fountainMap .riverbank { 
+  fill: #9DD9D2; 
+}
+.fountainMap .water_boundary, .fountainMap .ocean_boundary, .fountainMap .riverbank_boundary { fill: none; stroke: #93cbc4; stroke-width: 0.5px; }
+.fountainMap .major_road { stroke: #fb7b7a; stroke-width: 1px; }
+.fountainMap .minor_road { stroke: #999; stroke-width: 0.5px; }
+.fountainMap .highway { stroke: #FA4A48; stroke-width: 1.5px; }
+.fountainMap .buildings-layer { stroke: #987284; stroke-width: 0.15px; }
+.fountainMap .park, .fountainMap .nature_reserve, .fountainMap .wood, .fountainMap .protected_land { fill: #88D18A; stroke: #88D18A; stroke-width: 0.5px; }
+.fountainMap .pier { fill: #fff; stroke: #fff; stroke-width: 0.5px; }
+.fountainMap .rail { stroke: #503D3F; stroke-width: 0.5px; }
