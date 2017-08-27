@@ -79,10 +79,25 @@ d3.csv("data/fountains.csv", function(error, fountains) {
     var fountainCircles = g.selectAll(".fountain")
         .data(fountains)
         .enter()
-        .append("circle")
+        .append("image")
         .attr("class", "fountain")
-        .style("fill", function(d) {
-            return z(d.Type);
+        .attr("xlink:href", function(d) {
+          switch (d.Type) {
+            case "Combo":
+              return "img/combo_fountain.png";
+              break;
+            case "Dog":
+              return "img/dog_fountain.png";
+              break;
+            case "Tap":
+              return "img/tap_fountain.png";
+              break;
+            case "Decomissioned":
+              return "img/decomissioned_fountain.png";
+              break;
+            default:
+              return "img/standard_fountain.png";
+          }
         })
         .on("mouseover", viewMapInfo)
         .on("mouseout", function(d) {
@@ -94,26 +109,52 @@ d3.csv("data/fountains.csv", function(error, fountains) {
 
     function update() {
       fountainCircles.attr("transform", function(d) { 
+        switch (map.getZoom()) {
+          case 15: 
+            return "translate(" + 
+              (map.latLngToLayerPoint(d.LatLng).x - 8) + ","+ 
+              (map.latLngToLayerPoint(d.LatLng).y - 8) + ")";
+            break;
+          case 16: 
+            return "translate(" + 
+              (map.latLngToLayerPoint(d.LatLng).x - 11) + ","+ 
+              (map.latLngToLayerPoint(d.LatLng).y - 11) + ")";
+            break;
+          case 17: 
+            return "translate(" + 
+              (map.latLngToLayerPoint(d.LatLng).x - 15) + ","+ 
+              (map.latLngToLayerPoint(d.LatLng).y - 15) + ")";
+            break;
+          case 18: 
+            return "translate(" + 
+              (map.latLngToLayerPoint(d.LatLng).x - 20) + ","+ 
+              (map.latLngToLayerPoint(d.LatLng).y - 20) + ")";
+            break;
+          default:
+            return "translate(" + 
+              (map.latLngToLayerPoint(d.LatLng).x - 6) + ","+ 
+              (map.latLngToLayerPoint(d.LatLng).y - 6) + ")";
+        }
         return "translate(" + 
           map.latLngToLayerPoint(d.LatLng).x + ","+ 
           map.latLngToLayerPoint(d.LatLng).y + ")";
       })
-      .attr("r", function(d) {
+      .attr("width", function(d) {
         switch (map.getZoom()) {
           case 15: 
-            return 4;
+            return 16;
             break;
           case 16: 
-            return 5;
+            return 22;
             break;
           case 17: 
-            return 8;
+            return 30;
             break;
           case 18: 
-            return 12;
+            return 40;
             break;
           default:
-            return 3;
+            return 12;
         }
       });
     }
