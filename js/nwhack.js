@@ -30,28 +30,29 @@ L.tileLayer(
 var svgLayer = L.svg();
 svgLayer.addTo(map);
 
-var svg = d3.select("#map").select("svg");
+var svg = d3.select("#map")
+  .select("svg");
+
 var g = d3.select("#map").select("svg").select('g');
 g.attr("class", "leaflet-zoom-hide");
 
 var viewMapInfo = function(d) {
     d3.select("#infoBox")
         .style("left", function(temp) {
-            var shift = (d3.event.pageX + 5) + "px";
+            var shift = (d3.event.pageX + 8) + "px";
             if (d3.event.pageX > 500) {
-                shift = (d3.event.pageX - 330) + "px";
+                shift = (d3.event.pageX - 310) + "px";
             }
             return shift;
         })
         .style("top", function(temp) {
-            var shift = (d3.event.pageY - 12) + "px";
-            if (d.Y < 49.20752788) {
-                shift = (d3.event.pageY - 400) + "px";
+            var shift = (d3.event.pageY - 6) + "px";
+            if (d3.event.pageY > 300) {
+                shift = (d3.event.pageY - 360) + "px";
             }
             return shift;
         })
         .style("background", function(e) {
-          console.log(iconColour(d.Type));
             return iconColour(d.Type);
         });
 
@@ -113,3 +114,33 @@ d3.csv("data/fountains.csv", function(error, fountains) {
       .attr("height", function(d) { return iconSize(map.getZoom()); });
     }
 });
+
+if (!detectmob()) {
+  var mapObj = document.getElementById("map");
+
+  var legend = d3.select("#legend")
+    .style("top", function(d) {
+      return (mapObj.getBoundingClientRect().bottom - 250) + "px";
+    })
+    .style ("left", function(d) {
+      return (mapObj.getBoundingClientRect().right - 280) + "px";
+    });
+  } else {
+    d3.select("#legend")
+      .style("display", "none");
+  }
+
+function detectmob() { 
+ if( navigator.userAgent.match(/Android/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/iPad/i)
+    || navigator.userAgent.match(/iPod/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i)
+  ){
+    return true;
+  } else {
+    return false;
+  }
+}
