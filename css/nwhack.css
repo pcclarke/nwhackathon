@@ -20,22 +20,20 @@ svg {
 }
 
 #infoBox {
-    background: #fff;
-    border: 1px solid #000;
-    border-radius: 5px;
-    box-shadow: 3px 3px 5px 6px #ccc;
+    box-shadow: 3px 3px 5px 6px rgba(68, 68, 68, 0.3);
+    color: #ffffff;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    margin: 15px auto;
-    padding: 10px;
+    padding: 5px 10px;
     position: absolute;
     width: 300px;
     z-index: 1000;
 }
 
 #infoBox .infoTitle {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 24px;
+    margin-top: 5px;
     margin-bottom: 8px;
+    text-transform: uppercase;
 }
 
 #infoBox .info {
@@ -43,8 +41,28 @@ svg {
     margin: 0;
 }
 
-#infoBox .infoData {
-    
+#infoBox .infoLabel {
+    font-weight: bold;
+}
+
+.infoCombo {
+  background: #c500db;
+}
+
+.infoDecomissioned {
+  background: #754c24;
+}
+
+.infoDog {
+  background: #e80c35;
+}
+
+.infoStandard {
+  background: #590ce8;
+}
+
+.infoTap {
+  background: #078e6c;
 }
 
 #infoImg {

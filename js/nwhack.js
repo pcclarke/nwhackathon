@@ -1,5 +1,10 @@
-var z = d3.scaleOrdinal()
-    .range(["#590CE8", "#C500DB", "#E80C35", "#AAAAAA", "#a05d56", "#d0743c", "#ff8c00"]);
+var iconColour = d3.scaleOrdinal()
+  .domain(["Standard", "Combo", "Dog", "Decomissioned", "Tap"])
+  .range(["#590CE8", "#C500DB", "#E80C35", "#754c24", "#078e6c"]);
+
+var iconSize = d3.scaleOrdinal()
+  .domain([14, 15, 16, 17, 18])
+  .range([12, 16, 22, 30, 40]);
 
 var corner1 = L.latLng(49.254074, -123.003616),
   corner2 = L.latLng(49.162721, -122.857018),
@@ -41,28 +46,18 @@ var viewMapInfo = function(d) {
         .style("top", function(temp) {
             var shift = (d3.event.pageY - 12) + "px";
             if (d.Y < 49.20752788) {
-                shift = (d3.event.pageY - 420) + "px";
+                shift = (d3.event.pageY - 400) + "px";
             }
             return shift;
+        })
+        .style("background", function(e) {
+          console.log(iconColour(d.Type));
+            return iconColour(d.Type);
         });
 
     d3.select("#area").text(d.Area);
     d3.select("#type").text(d.Type);
     d3.select("#neighbourhood").text(d.Neighbourhood);
-    d3.select("#colour").text(d["Colour/Material"]);
-    if (d.Style === "-") {
-        d3.select("#styleLine").classed("hidden", true);
-    } else {
-        d3.select("#style").text(d.Style);
-        d3.select("#styleLine").classed("hidden", false);
-    }
-    if (d["Bowl Height"] === "-") {
-        d3.select("#bowlLine").classed("hidden", true);
-    } else {
-        d3.select("#height").text(d["Bowl Height"]);
-        d3.select("#bowlLine").classed("hidden", false);
-    }
-    d3.select("#objid").text(d.OBJECTID);
 
     d3.select("#infoImg").attr("src", "img/" + d.OBJECTID + ".jpg");
 
@@ -109,53 +104,12 @@ d3.csv("data/fountains.csv", function(error, fountains) {
 
     function update() {
       fountainCircles.attr("transform", function(d) { 
-        switch (map.getZoom()) {
-          case 15: 
-            return "translate(" + 
-              (map.latLngToLayerPoint(d.LatLng).x - 8) + ","+ 
-              (map.latLngToLayerPoint(d.LatLng).y - 8) + ")";
-            break;
-          case 16: 
-            return "translate(" + 
-              (map.latLngToLayerPoint(d.LatLng).x - 11) + ","+ 
-              (map.latLngToLayerPoint(d.LatLng).y - 11) + ")";
-            break;
-          case 17: 
-            return "translate(" + 
-              (map.latLngToLayerPoint(d.LatLng).x - 15) + ","+ 
-              (map.latLngToLayerPoint(d.LatLng).y - 15) + ")";
-            break;
-          case 18: 
-            return "translate(" + 
-              (map.latLngToLayerPoint(d.LatLng).x - 20) + ","+ 
-              (map.latLngToLayerPoint(d.LatLng).y - 20) + ")";
-            break;
-          default:
-            return "translate(" + 
-              (map.latLngToLayerPoint(d.LatLng).x - 6) + ","+ 
-              (map.latLngToLayerPoint(d.LatLng).y - 6) + ")";
-        }
-        return "translate(" + 
-          map.latLngToLayerPoint(d.LatLng).x + ","+ 
-          map.latLngToLayerPoint(d.LatLng).y + ")";
+        var halfSize = iconSize(map.getZoom()) / 2;
+        return "translate(" +
+          (map.latLngToLayerPoint(d.LatLng).x - halfSize) + "," +
+          (map.latLngToLayerPoint(d.LatLng).y - halfSize) + ")";
       })
-      .attr("width", function(d) {
-        switch (map.getZoom()) {
-          case 15: 
-            return 16;
-            break;
-          case 16: 
-            return 22;
-            break;
-          case 17: 
-            return 30;
-            break;
-          case 18: 
-            return 40;
-            break;
-          default:
-            return 12;
-        }
-      });
+      .attr("width", function(d) { return iconSize(map.getZoom()); })
+      .attr("height", function(d) { return iconSize(map.getZoom()); });
     }
 });
